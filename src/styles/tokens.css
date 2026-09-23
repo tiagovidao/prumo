@@ -1,0 +1,42 @@
+:root {
+  /* Base — cinza-ardósia escuro, não preto puro */
+  --bg: #14151c;
+  --surface-1: #1c1e28;
+  --surface-2: #242631;
+  --border: #2a2c38;
+
+  /* Texto */
+  --text-primary: #ededf2;
+  --text-secondary: #9295a6;
+  --text-muted: #6b6e7f;
+
+  /* Estado */
+  --danger: #e2574a;
+  --danger-tint: rgba(226, 87, 74, 0.14);
+
+  /* Acento por módulo */
+  --accent-habitos: #e0925a;
+  --accent-habitos-tint: rgba(224, 146, 90, 0.14);
+
+  --accent-humor: #9b93d9;
+  --accent-humor-tint: rgba(155, 147, 217, 0.14);
+
+  --accent-financeiro: #7fb88c;
+  --accent-financeiro-tint: rgba(127, 184, 140, 0.14);
+
+  /* Tipografia */
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Forma */
+  --radius-card: 16px;
+  --radius-control: 10px;
+
+  /* Espaçamento base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
