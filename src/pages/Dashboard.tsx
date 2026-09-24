@@ -61,6 +61,10 @@ export function Dashboard() {
     }
   }, [user])
 
+  const metadata = user?.user_metadata ?? {}
+  const displayName: string = metadata.full_name ?? metadata.name ?? user?.email ?? ''
+  const avatarUrl: string | undefined = metadata.avatar_url ?? metadata.picture
+
   return (
     <div style={{ maxWidth: 480, margin: '0 auto', padding: 'var(--space-5) var(--space-4)' }}>
       <header
@@ -73,15 +77,26 @@ export function Dashboard() {
       >
         <div>
           <h1 style={{ fontSize: 22 }}>Hoje</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 13, margin: 0 }}>{user?.email}</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, margin: 0 }}>{displayName}</p>
         </div>
-        <button
-          onClick={() => signOut()}
-          aria-label="Sair"
-          style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', padding: 8 }}
-        >
-          <LogOut size={20} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          {avatarUrl && (
+            <img
+              src={avatarUrl}
+              alt=""
+              width={32}
+              height={32}
+              style={{ borderRadius: '50%', objectFit: 'cover' }}
+            />
+          )}
+          <button
+            onClick={() => signOut()}
+            aria-label="Sair"
+            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', padding: 8 }}
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       {loading ? (
