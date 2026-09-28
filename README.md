@@ -17,7 +17,8 @@ Aplicativo pessoal (PWA) para consolidar três áreas da vida que hoje são acom
 - ✅ Dashboard "Hoje" com dados reais do Supabase (resumo dos 3 módulos)
 - ✅ Schema do banco completo, com RLS habilitado em todas as tabelas
 - ✅ Deploy em produção no Vercel
-- ⏳ Módulos de Hábitos, Diário emocional e Financeiro: schema pronto, telas ainda em construção (placeholder por enquanto — próxima etapa do desenvolvimento)
+- ✅ Módulo de Hábitos: CRUD completo, check-in diário, streak e % de consistência
+- ⏳ Módulos de Diário emocional e Financeiro: schema pronto, telas ainda em construção (placeholder por enquanto — próxima etapa do desenvolvimento)
 
 ## Rodando localmente
 

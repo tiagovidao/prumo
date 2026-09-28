@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
+import { Habitos } from './pages/Habitos'
 import { ModulePlaceholder } from './pages/ModulePlaceholder'
 
 export default function App() {
@@ -20,7 +21,7 @@ export default function App() {
         path="/habitos"
         element={
           <ProtectedRoute>
-            <ModulePlaceholder title="Hábitos" accent="habitos" />
+            <Habitos />
           </ProtectedRoute>
         }
       />
