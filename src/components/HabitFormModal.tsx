@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type CSSProperties } from 'react'
+import { useEffect, useState, type FormEvent, type CSSProperties } from 'react'
 import { X } from 'lucide-react'
 import { weekdayLabel, type FrequencyType } from '../lib/habitStats'
 
@@ -47,6 +47,14 @@ export function HabitFormModal({
     onSubmit({ name: name.trim(), frequencyType, frequencyDays })
   }
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
+
   const displayedError = validationError ?? submitError ?? null
 
   return (
@@ -73,7 +81,6 @@ export function HabitFormModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={inputStyle}
-            autoFocus
           />
 
           <div>
@@ -137,6 +144,9 @@ const modalStyle: CSSProperties = {
   maxWidth: 480,
   background: 'var(--surface-1)',
   borderRadius: '20px 20px 0 0',
+  maxHeight: '90dvh',
+  overflowY: 'auto',
+  overscrollBehavior: 'contain',
   padding: 'var(--space-5) var(--space-4)',
   paddingBottom: 'calc(var(--space-6) + env(safe-area-inset-bottom, 0px))',
 }
@@ -153,7 +163,7 @@ const inputStyle: CSSProperties = {
   border: '1px solid var(--border)',
   background: 'var(--surface-2)',
   color: 'var(--text-primary)',
-  fontSize: 15,
+  fontSize: 16,
 }
 
 const iconButtonStyle: CSSProperties = {

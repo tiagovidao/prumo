@@ -11,6 +11,24 @@ body,
   height: 100%;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+/* Sem zoom por toque duplo nem atraso de 300ms em toques (pinça continua funcionando) */
+html,
+body,
+button,
+a,
+label,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -21,6 +39,11 @@ body {
   -webkit-font-smoothing: antialiased;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 h1,
@@ -40,11 +63,23 @@ button {
   cursor: pointer;
 }
 
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+button {
+  transition: transform 0.1s ease;
+}
+
+/* 16px é o mínimo para o iOS não dar zoom automático ao focar o campo */
 input,
 select,
 textarea {
   font-family: inherit;
+  font-size: 16px;
   color: inherit;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 a {
