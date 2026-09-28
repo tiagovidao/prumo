@@ -1,3 +1,5 @@
+import { formatDateOnly, localDayOfTimestamp, todayDateOnly } from './dates'
+
 export type FrequencyType = 'daily' | 'weekly_days'
 
 export type Habit = {
@@ -30,24 +32,6 @@ export function isDueOn(habit: Pick<Habit, 'frequency_type' | 'frequency_days'>,
   return habit.frequency_days?.includes(date.getDay()) ?? false
 }
 
-export function formatDateOnly(date: Date): string {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, '0')
-  const d = String(date.getDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
-
-function parseDateOnly(dateStr: string): Date {
-  const [y, m, d] = dateStr.slice(0, 10).split('-').map(Number)
-  return new Date(y, m - 1, d)
-}
-
-export function todayDateOnly(): Date {
-  const now = new Date()
-  now.setHours(0, 0, 0, 0)
-  return now
-}
-
 /**
  * Sequência atual de dias cumpridos, contando de trás para frente a partir de hoje.
  * Se hoje ainda é um dia devido e não foi marcado, isso não quebra a sequência —
@@ -58,7 +42,7 @@ export function calculateStreak(
   checkinDates: Set<string>,
   today: Date = todayDateOnly(),
 ): number {
-  const createdAt = parseDateOnly(habit.created_at)
+  const createdAt = localDayOfTimestamp(habit.created_at)
   const cursor = new Date(today)
 
   if (isDueOn(habit, cursor) && !checkinDates.has(formatDateOnly(cursor))) {
@@ -86,7 +70,7 @@ export function calculateConsistency(
   checkinDates: Set<string>,
   today: Date = todayDateOnly(),
 ): number {
-  const createdAt = parseDateOnly(habit.created_at)
+  const createdAt = localDayOfTimestamp(habit.created_at)
   const cursor = new Date(createdAt)
 
   let expected = 0

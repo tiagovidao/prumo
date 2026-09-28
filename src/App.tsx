@@ -3,6 +3,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Habitos } from './pages/Habitos'
+import { Humor } from './pages/Humor'
 import { ModulePlaceholder } from './pages/ModulePlaceholder'
 
 export default function App() {
@@ -29,7 +30,7 @@ export default function App() {
         path="/humor"
         element={
           <ProtectedRoute>
-            <ModulePlaceholder title="Diário emocional" accent="humor" />
+            <Humor />
           </ProtectedRoute>
         }
       />

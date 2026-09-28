@@ -63,7 +63,7 @@ Restrição `unique (habit_id, checkin_date)` — um check-in por hábito por di
 | `note` | text | texto livre, opcional |
 | `created_at` | timestamptz | |
 
-Restrição `unique (user_id, entry_date)` — um registro de humor por dia.
+Restrição `unique (user_id, entry_date)` — um registro de humor por dia. A tela salva com `upsert` nessa chave, então registrar de novo no mesmo dia atualiza o registro. O tamanho da nota (2000 caracteres) é limitado no cliente; o banco não impõe limite.
 
 ### Módulo Financeiro
 
@@ -97,6 +97,10 @@ Restrição `unique (user_id, entry_date)` — um registro de humor por dia.
 
 Variáveis de ambiente configuradas no Vercel (produção, preview e desenvolvimento): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`.
 
+## Datas e fuso horário
+
+Todas as datas "só dia" (`entry_date`, `checkin_date`, `expense_date`) são geradas e comparadas no **fuso local do dispositivo**, via `src/lib/dates.ts`. Não usar `toISOString().slice(0, 10)` para isso: ele devolve a data em UTC, que em Brasília já é o dia seguinte a partir das 21h. Para colunas `timestamptz` (ex.: `created_at`), converter com `localDayOfTimestamp` antes de comparar com datas locais.
+
 ## PWA
 
 Configurado via `vite-plugin-pwa` (modo `generateSW`, `registerType: 'autoUpdate'`). Manifest com tema escuro (`#14151c`), ícones customizados em `public/icons/` (192px, 512px, e uma versão maskable para Android).
@@ -104,7 +108,7 @@ Configurado via `vite-plugin-pwa` (modo `generateSW`, `registerType: 'autoUpdate
 ## Roadmap técnico (próximas etapas)
 
 1. Configurar credencial OAuth do Google (passo manual, veja README.md)
-2. Implementar módulo Hábitos por completo (CRUD de hábitos, check-in diário, cálculo de streak/consistência)
-3. Implementar módulo Diário emocional (formulário de registro diário)
+2. ✅ Módulo Hábitos (CRUD de hábitos, check-in diário, cálculo de streak/consistência)
+3. ✅ Módulo Diário emocional (registro diário, tendência e histórico)
 4. Implementar módulo Financeiro (categorias, registro de gastos, alertas proativos, reflexão guiada)
 5. Conectar repositório a um provedor Git (GitHub) para deploy automático a cada push

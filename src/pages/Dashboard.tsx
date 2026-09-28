@@ -4,6 +4,7 @@ import { Flame, Smile, Wallet, LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { ModuleCard } from '../components/ModuleCard'
+import { formatDateOnly, startOfMonth, todayDateOnly } from '../lib/dates'
 
 type BudgetCategorySummary = {
   name: string
@@ -25,10 +26,8 @@ export function Dashboard() {
     let cancelled = false
 
     async function loadDashboard() {
-      const today = new Date().toISOString().slice(0, 10)
-      const monthStart = new Date()
-      monthStart.setDate(1)
-      const monthStartStr = monthStart.toISOString().slice(0, 10)
+      const today = formatDateOnly(todayDateOnly())
+      const monthStartStr = formatDateOnly(startOfMonth())
 
       const [habitsRes, checkinsRes, moodRes, categoriesRes, expensesRes] = await Promise.all([
         supabase.from('habits').select('id').eq('archived', false),

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import {
   calculateConsistency,
   calculateStreak,
-  formatDateOnly,
   isDueOn,
-  todayDateOnly,
   type Habit,
   type HabitCheckin,
 } from '../lib/habitStats'
+import { formatDateOnly, todayDateOnly } from '../lib/dates'
+import { ErrorBanner } from '../components/ErrorBanner'
 import { HabitCard } from '../components/HabitCard'
 import { HabitFormModal, type HabitFormValues } from '../components/HabitFormModal'
 
@@ -196,14 +196,7 @@ export function Habitos() {
         </button>
       </div>
 
-      {listError && (
-        <div style={errorBannerStyle}>
-          <p style={{ margin: 0, fontSize: 13 }}>{listError}</p>
-          <button onClick={() => setListError(null)} aria-label="Fechar aviso" style={iconButtonStyle}>
-            <X size={14} />
-          </button>
-        </div>
-      )}
+      {listError && <ErrorBanner message={listError} onDismiss={() => setListError(null)} />}
 
       {loading ? (
         <p style={{ color: 'var(--text-secondary)' }}>Carregando…</p>
@@ -268,24 +261,4 @@ const addButtonStyle: CSSProperties = {
   color: 'var(--accent-habitos)',
   fontWeight: 500,
   fontSize: 13,
-}
-
-const errorBannerStyle: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: 'var(--space-2)',
-  background: 'var(--danger-tint)',
-  color: 'var(--danger)',
-  borderRadius: 'var(--radius-control)',
-  padding: '10px 12px',
-  marginBottom: 'var(--space-4)',
-}
-
-const iconButtonStyle: CSSProperties = {
-  background: 'none',
-  border: 'none',
-  color: 'var(--danger)',
-  padding: 4,
-  flexShrink: 0,
 }

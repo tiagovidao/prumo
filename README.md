@@ -18,7 +18,8 @@ Aplicativo pessoal (PWA) para consolidar três áreas da vida que hoje são acom
 - ✅ Schema do banco completo, com RLS habilitado em todas as tabelas
 - ✅ Deploy em produção no Vercel
 - ✅ Módulo de Hábitos: CRUD completo, check-in diário, streak e % de consistência
-- ⏳ Módulos de Diário emocional e Financeiro: schema pronto, telas ainda em construção (placeholder por enquanto — próxima etapa do desenvolvimento)
+- ✅ Módulo de Diário emocional: registro diário (escala 1–5 + nota), edição do registro de hoje, tendência dos últimos 14 dias e histórico de 30 dias
+- ⏳ Módulo Financeiro: schema pronto, tela ainda em construção (placeholder por enquanto — próxima etapa do desenvolvimento)
 
 ## Rodando localmente
 
@@ -65,8 +66,8 @@ Até esse passo ser feito, o botão "Continuar com Google" fica visível mas ret
 src/
   components/     — componentes reutilizáveis (ModuleCard, ProtectedRoute)
   contexts/        — AuthContext (sessão, login, logout)
-  lib/             — cliente Supabase
-  pages/           — telas (Login, Dashboard, placeholders dos módulos)
+  lib/             — cliente Supabase, datas em fuso local (dates), regras de hábitos (habitStats) e escala de humor (moods)
+  pages/           — telas (Login, Dashboard, Hábitos, Diário emocional e placeholder do Financeiro)
   styles/          — tokens de design (cores, tipografia) e estilos globais
 public/
   icons/           — ícones do PWA
