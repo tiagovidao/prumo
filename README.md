@@ -2,7 +2,7 @@
 
 Aplicativo pessoal (PWA) para consolidar três áreas da vida que hoje são acompanhadas de forma manual: **hábitos**, **diário emocional** e **financeiro**. Uso individual, com a base já pronta para evoluir para multiusuário no futuro.
 
-> Documentação completa do projeto: veja também [`docs/DECISOES-DE-ESCOPO.md`](docs/DECISOES-DE-ESCOPO.md) (o que foi decidido e por quê) e [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) (como o sistema é construído por dentro).
+> Documentação completa do projeto: veja também [`docs/DECISOES-DE-ESCOPO.md`](docs/DECISOES-DE-ESCOPO.md) (o que foi decidido e por quê), [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) (como o sistema é construído por dentro) e [`docs/CHANGELOG.md`](docs/CHANGELOG.md) (o que mudou em cada rodada de desenvolvimento).
 
 ## Stack
 
