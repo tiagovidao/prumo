@@ -7,6 +7,7 @@ import { ModuleCard } from '../components/ModuleCard'
 import { formatDateOnly, startOfMonth, todayDateOnly } from '../lib/dates'
 
 type BudgetCategorySummary = {
+  id: string
   name: string
   limit: number
   spent: number
@@ -33,7 +34,7 @@ export function Dashboard() {
         supabase.from('habits').select('id').eq('archived', false),
         supabase.from('habit_checkins').select('habit_id').eq('checkin_date', today),
         supabase.from('mood_entries').select('id').eq('entry_date', today).maybeSingle(),
-        supabase.from('budget_categories').select('id, name, monthly_limit'),
+        supabase.from('budget_categories').select('id, name, monthly_limit').eq('archived', false),
         supabase.from('expenses').select('category_id, amount').gte('expense_date', monthStartStr),
       ])
 
@@ -43,7 +44,7 @@ export function Dashboard() {
         const spent = (expensesRes.data ?? [])
           .filter((expense) => expense.category_id === cat.id)
           .reduce((sum, expense) => sum + Number(expense.amount), 0)
-        return { name: cat.name, limit: Number(cat.monthly_limit), spent }
+        return { id: cat.id, name: cat.name, limit: Number(cat.monthly_limit), spent }
       })
 
       setHabitsTotal(habitsRes.data?.length ?? 0)
@@ -137,7 +138,7 @@ export function Dashboard() {
                     const pct = cat.limit > 0 ? Math.min(100, Math.round((cat.spent / cat.limit) * 100)) : 0
                     const nearLimit = pct >= 90
                     return (
-                      <div key={cat.name}>
+                      <div key={cat.id}>
                         <div
                           style={{
                             display: 'flex',

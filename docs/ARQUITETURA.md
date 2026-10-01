@@ -74,6 +74,7 @@ Restrição `unique (user_id, entry_date)` — um registro de humor por dia. A t
 | `user_id` | uuid, FK → `auth.users` | |
 | `name` | text | |
 | `monthly_limit` | numeric(12,2) | `check (>= 0)` |
+| `archived` | boolean | default `false`. Arquivar (em vez de excluir) evita que gastos já registrados na categoria percam o nome — `expenses.category_id` não é tocado, só some da lista/seletor de categorias ativas |
 | `created_at` | timestamptz | |
 
 **`expenses`**
@@ -87,6 +88,8 @@ Restrição `unique (user_id, entry_date)` — um registro de humor por dia. A t
 | `expense_date` | date | default `current_date` |
 | `reflection_note` | text | preenchido quando o gasto estoura o limite da categoria (reflexão guiada) |
 | `created_at` | timestamptz | |
+
+Trigger `expenses_category_ownership` (before insert/update): garante que `category_id`, quando preenchido, aponta para uma categoria do mesmo `user_id` do gasto. A RLS por si só não cobre isso — ela valida a posse da linha (`auth.uid() = user_id`), não a consistência entre os dois FKs da mesma linha.
 
 ## Infraestrutura
 
@@ -110,5 +113,5 @@ Configurado via `vite-plugin-pwa` (modo `generateSW`, `registerType: 'autoUpdate
 1. Configurar credencial OAuth do Google (passo manual, veja README.md)
 2. ✅ Módulo Hábitos (CRUD de hábitos, check-in diário, cálculo de streak/consistência)
 3. ✅ Módulo Diário emocional (registro diário, tendência e histórico)
-4. Implementar módulo Financeiro (categorias, registro de gastos, alertas proativos, reflexão guiada)
+4. ✅ Módulo Financeiro (categorias, registro de gastos, alerta proativo aos 90%, reflexão guiada ao estourar)
 5. Conectar repositório a um provedor Git (GitHub) para deploy automático a cada push

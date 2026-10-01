@@ -11,7 +11,7 @@ Aplicativo pessoal (PWA) para consolidar três áreas da vida que hoje são acom
 - **Deploy**: [Vercel](https://vercel.com) (plano Hobby / gratuito)
 - **Ícones**: gerados em `public/icons/` (motivo visual: fio de prumo, ligando à identidade do nome)
 
-## Status atual (V1 — fundação técnica)
+## Status atual (V1 completa)
 
 - ✅ Autenticação funcionando (Google + e-mail/senha), com rotas protegidas
 - ✅ Dashboard "Hoje" com dados reais do Supabase (resumo dos 3 módulos)
@@ -19,7 +19,7 @@ Aplicativo pessoal (PWA) para consolidar três áreas da vida que hoje são acom
 - ✅ Deploy em produção no Vercel
 - ✅ Módulo de Hábitos: CRUD completo, check-in diário, streak e % de consistência
 - ✅ Módulo de Diário emocional: registro diário (escala 1–5 + nota), edição do registro de hoje, tendência dos últimos 14 dias e histórico de 30 dias
-- ⏳ Módulo Financeiro: schema pronto, tela ainda em construção (placeholder por enquanto — próxima etapa do desenvolvimento)
+- ✅ Módulo Financeiro: CRUD de categorias de orçamento com limite mensal, registro de gastos, alerta proativo ao atingir 90% do limite e reflexão guiada obrigatória ao ultrapassá-lo
 
 ## Rodando localmente
 
@@ -64,10 +64,16 @@ Até esse passo ser feito, o botão "Continuar com Google" fica visível mas ret
 
 ```
 src/
-  components/     — componentes reutilizáveis (ModuleCard, ProtectedRoute)
+  components/     — componentes reutilizáveis:
+                    ModuleCard, ProtectedRoute, ErrorBanner (compartilhados)
+                    HabitCard, HabitFormModal (Hábitos)
+                    MoodPicker (Diário emocional)
+                    CategoryCard, CategoryFormModal, ExpenseFormModal, ExpenseItem (Financeiro)
   contexts/        — AuthContext (sessão, login, logout)
-  lib/             — cliente Supabase, datas em fuso local (dates), regras de hábitos (habitStats) e escala de humor (moods)
-  pages/           — telas (Login, Dashboard, Hábitos, Diário emocional e placeholder do Financeiro)
+  lib/             — cliente Supabase (supabase), datas em fuso local (dates),
+                    regras de hábitos (habitStats), escala de humor (moods)
+                    e cálculos financeiros (finance)
+  pages/           — telas: Login, Dashboard, Habitos, Humor, Financeiro
   styles/          — tokens de design (cores, tipografia) e estilos globais
 public/
   icons/           — ícones do PWA

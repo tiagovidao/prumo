@@ -4,7 +4,7 @@ import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Habitos } from './pages/Habitos'
 import { Humor } from './pages/Humor'
-import { ModulePlaceholder } from './pages/ModulePlaceholder'
+import { Financeiro } from './pages/Financeiro'
 
 export default function App() {
   return (
@@ -38,7 +38,7 @@ export default function App() {
         path="/financeiro"
         element={
           <ProtectedRoute>
-            <ModulePlaceholder title="Financeiro" accent="financeiro" />
+            <Financeiro />
           </ProtectedRoute>
         }
       />

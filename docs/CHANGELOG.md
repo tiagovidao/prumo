@@ -2,6 +2,43 @@
 
 Registro cronológico do que foi construído, corrigido e decidido a cada rodada de desenvolvimento. Ordem: mais recente primeiro. Para "por que o produto tem esse formato", veja [`DECISOES-DE-ESCOPO.md`](DECISOES-DE-ESCOPO.md); para "como o sistema é construído por dentro", veja [`ARQUITETURA.md`](ARQUITETURA.md).
 
+## 2026-09-29 — Módulo Financeiro
+
+**Adicionado**
+- Página `/financeiro`: CRUD de categorias de orçamento (nome + limite mensal) e registro de gastos (categoria, valor, descrição opcional, data), com listagem dos gastos do mês corrente.
+- Alerta proativo aos 90% do limite: aparece no card da categoria (barra e percentual em destaque) e, de novo, ao escolher a categoria no formulário de novo gasto — antes mesmo de o valor ser digitado.
+- Reflexão guiada: quando o valor informado faz a categoria ultrapassar 100% do limite do mês, o formulário passa a exigir uma nota curta sobre o motivo do gasto antes de permitir salvar. A nota fica junto do gasto na listagem.
+- `src/lib/finance.ts` com a lógica pura (gasto acumulado por categoria, percentual do limite, formatação em `R$`).
+- ~~Excluir uma categoria não apaga os gastos já registrados nela — a constraint do banco (`on delete set null`) apenas desvincula o gasto, que passa a aparecer como "Sem categoria" no histórico.~~ Substituído por arquivamento — ver "Arquivamento de categorias" mais abaixo, mesma data.
+- `src/pages/ModulePlaceholder.tsx` removido: não sobrava mais nenhuma rota usando o placeholder, já que os 3 módulos previstos estão implementados.
+
+**Validado**
+- `tsc --noEmit` e `npm run build` sem erros.
+- Constraints do banco verificadas diretamente contra o schema de produção, dentro de transações com `ROLLBACK` (sem deixar dado de teste): limite mensal negativo é rejeitado, gasto com valor zero ou negativo é rejeitado, e a exclusão de categoria confirmadamente preserva o gasto com `category_id` nulo.
+- `get_advisors` (segurança) não aponta nenhum problema novo nas tabelas `budget_categories`/`expenses` — RLS já habilitado desde a fundação técnica.
+- Ainda falta o teste manual do usuário em produção (fluxo completo pela UI), como nos módulos anteriores.
+
+**Pente-fino e correções**
+- Auditoria completa do módulo (lógica, datas, dinheiro, banco, RLS, UI/mobile, acessibilidade, performance, documentação) encontrou 16 pontos, dos quais 2 de Alto impacto e 5 de Médio. Corrigidos nesta rodada:
+  - Campo de data do gasto agora tem `min` no início do mês corrente (antes só tinha `max`) — evita um gasto salvo com data de outro mês sumir da listagem sem nenhum aviso.
+  - `parseCurrencyInput` (novo, em `lib/finance.ts`) corrige o parsing de valores em formato brasileiro com separador de milhar (ex: "1.500,00"), que antes virava `NaN`. Usado em `ExpenseFormModal` e `CategoryFormModal`.
+  - Seletor de categoria no formulário de gasto trocou de `<select>` nativo (único ponto do app fora do design system, sem `aria-label`) para um `role="radiogroup"` de botões, no mesmo padrão do `HabitFormModal`.
+  - `Dashboard.tsx`: `key={cat.name}` (quebrava com categorias duplicadas) trocado por `key={cat.id}`.
+  - `README.md` atualizado: Financeiro não aparece mais como placeholder; "Estrutura de pastas" reflete os componentes/lib reais dos 3 módulos.
+  - Migration `expenses_category_ownership_check`: trigger `before insert or update` em `expenses` garante que `category_id`, quando preenchido, pertence ao mesmo `user_id` do gasto. Testado (transações com `ROLLBACK`): inserção/atualização cross-user agora é rejeitada; inserção/atualização com categoria própria ou sem categoria continua funcionando normalmente.
+- **Adiado inicialmente, resolvido no mesmo dia** — ver "Arquivamento de categorias" logo abaixo.
+
+**Arquivamento de categorias (Financeiro)**
+- Diferente do hard-delete original: excluir uma categoria agora é arquivar (`archived = true`), não apagar a linha. Migration `add_budget_categories_archived` adiciona a coluna (`boolean`, default `false`).
+- Decisão restrita a `budget_categories` — `expenses` continua com hard-delete normal (excluir um gasto individual não tem o mesmo efeito cascata de perder o nome de outros registros, e o `window.confirm()` já existente é proteção equivalente à do resto do app).
+- Motivo de ser só categoria: diferente de Hábitos (onde arquivar só esconde o hábito, sem afetar o nome de nenhum check-in antigo), excluir uma categoria de verdade fazia `expenses.category_id` virar `null` — ou seja, apagava a informação "isso era Alimentação" de todo gasto histórico daquela categoria, mesmo gastos de meses atrás. Arquivar resolve isso: a categoria só some da lista/seletor de categorias ativas, mas o nome continua intacto pra sempre nos gastos já registrados.
+- Sem tela de "ver arquivadas"/restaurar — mesma limitação de Hábitos hoje (arquivar é, na prática, definitivo pela UI; a diferença é só que a categoria e seu nome continuam existindo no banco, preservando o histórico).
+- `Dashboard.tsx` e o seletor de categoria do formulário de gasto passam a considerar só categorias ativas (`archived = false`); o resumo "gasto no mês" no topo do Financeiro soma todos os gastos do mês independente de a categoria estar arquivada (o dinheiro foi gasto de qualquer forma), mas o total do limite só considera categorias ativas.
+- Testado em transações com `ROLLBACK`: categoria arquivada some da contagem de categorias ativas, mas o gasto vinculado a ela mantém o `category_id` original (não vira `null`).
+
+**Observação de processo**
+- A pedido do usuário, o push desta rodada não foi feito — o código está pronto localmente, aguardando o token de acesso para ser enviado ao repositório.
+
 ## 2026-09-28 — Módulo Diário emocional + correção de fuso horário
 
 **Adicionado**
@@ -57,4 +94,6 @@ Registro cronológico do que foi construído, corrigido e decidido a cada rodada
 
 ## Próximo
 
-- Módulo Financeiro: categorias de orçamento, registro de gastos, alerta proativo aos 90% do limite e reflexão guiada ao estourar.
+- Os 3 módulos do escopo V1 (Hábitos, Diário emocional, Financeiro) estão implementados, com o pente-fino do Financeiro (incluindo arquivamento de categorias) já aplicado. Falta o teste manual do usuário em produção e o push desta rodada.
+- Automatizar deploy a cada push (item 5 do roadmap em `ARQUITETURA.md`) — hoje o push ainda é feito manualmente com um token de acesso pessoal gerado a cada rodada.
+- V2 (fora do escopo atual, documentado em `DECISOES-DE-ESCOPO.md`): insights cruzados entre módulos, metas de economia, receitas/entradas financeiras.
